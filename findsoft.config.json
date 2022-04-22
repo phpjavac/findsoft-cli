@@ -1,0 +1,11 @@
+{
+    "cdn": {
+        "secretId": "your_secretId",
+        "secretKey": "your_secretKey",
+        "bucket": "your_bucket",
+        "fileName": "your_fileName",
+        "version": "your_version",
+        "domain": "your_domain",
+        "exclude":[".html",".DS_Store"]
+    }
+}
