@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
 import cdn from "./cdn";
+import newConfig from "./config";
 
 const type = process.argv[2];
 
 switch (type) {
     case "cdn":
         cdn();
+        break;
+    case "new":
+        newConfig();
         break;
     case "-v":
     case "--version":
@@ -15,27 +19,17 @@ switch (type) {
     case "?":
     case "--help":
     case "-h":
-        console.log(`
-    Usage:
-        cdn [type] [options]
-    Options:
-        -v, --version    output the version number
-        -h, --help       output usage information
-        ?                output usage information
-    Type:   
-        cdn             cdn
-    `);
+
     default:
         console.log(`
     Usage:
-        cdn [type] [options]
-    Options:
-        -v, --version    output the version number
-        -h, --help       output usage information
-        ?                output usage information
+        findsoft-cli [type]
     Type:   
-        cdn             cdn
-    `); break;
+        cdn              执行cdn工作流   
+        new              生成新的配置文件
+        -v, --version    output the version number
+    `);
+        break;
 }
 
 export default cdn;

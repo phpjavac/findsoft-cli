@@ -28,7 +28,7 @@ var require_package = __commonJS({
   "package.json"(exports, module2) {
     module2.exports = {
       name: "@findsoft/findsoft-cli",
-      version: "0.3.4",
+      version: "0.4.0",
       description: "",
       bin: {
         "findsoft-cli": "dist/findsoft-cli.js"
@@ -86,7 +86,7 @@ var replaceHref = (cdn, element, file) => {
   url = `${cdn.domain}/${url.replace(filePath, uploadFileName).replace(/\\/g, "/")}`;
   return url;
 };
-function setHtml(html, path2, cdn) {
+function setHtml(html, path3, cdn) {
   let $ = cheerio.load(html, { decodeEntities: false });
   $("link").each(function name(i, v) {
     let _href = $(v).attr("href");
@@ -95,7 +95,7 @@ function setHtml(html, path2, cdn) {
     if (_href.includes(cdn.domain) || _href.includes("//")) {
       return;
     } else {
-      let _replaceHref = replaceHref(cdn, _href, path2);
+      let _replaceHref = replaceHref(cdn, _href, path3);
       if (_href && _replaceHref) {
         $(v).attr("href", _replaceHref);
       }
@@ -108,13 +108,13 @@ function setHtml(html, path2, cdn) {
     if (_src.includes(cdn.domain)) {
       return;
     } else {
-      let _replaceHref = replaceHref(cdn, _src, path2);
+      let _replaceHref = replaceHref(cdn, _src, path3);
       if (_src && _replaceHref) {
         $(v).attr("src", _replaceHref);
       }
     }
   });
-  import_fs.default.writeFile(path2, $.html(), "utf-8", function(error) {
+  import_fs.default.writeFile(path3, $.html(), "utf-8", function(error) {
     if (error) {
     } else {
     }
@@ -253,11 +253,22 @@ var startCDN = async () => {
 };
 var cdn_default = startCDN;
 
+// src/config.ts
+var import_fs2 = __toESM(require("fs"));
+var import_path2 = __toESM(require("path"));
+var newConfig = () => {
+  import_fs2.default.copyFileSync(import_path2.default.resolve(__dirname, "static/findsoft.config.json"), `${process.cwd()}/findsoft.config.json`);
+};
+var config_default = newConfig;
+
 // src/index.ts
 var type = process.argv[2];
 switch (type) {
   case "cdn":
     cdn_default();
+    break;
+  case "new":
+    config_default();
     break;
   case "-v":
   case "--version":
@@ -266,26 +277,14 @@ switch (type) {
   case "?":
   case "--help":
   case "-h":
-    console.log(`
-    Usage:
-        cdn [type] [options]
-    Options:
-        -v, --version    output the version number
-        -h, --help       output usage information
-        ?                output usage information
-    Type:   
-        cdn             cdn
-    `);
   default:
     console.log(`
     Usage:
-        cdn [type] [options]
-    Options:
-        -v, --version    output the version number
-        -h, --help       output usage information
-        ?                output usage information
+        findsoft-cli [type]
     Type:   
-        cdn             cdn
+        cdn              \u6267\u884Ccdn\u5DE5\u4F5C\u6D41   
+        new              \u751F\u6210\u65B0\u7684\u914D\u7F6E\u6587\u4EF6
+        -v, --version    output the version number
     `);
     break;
 }
