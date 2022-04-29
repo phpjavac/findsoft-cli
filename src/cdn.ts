@@ -12,7 +12,7 @@ const webpackLazyRouter = "manifest.js"
 const replaceHref = (cdn, element: string, file) => {
     element = element.replace(`/${cdn.fileName}/`, "./")
     const uploadFileName = `${cdn.fileName}/${cdn.version}`;
-    const filePath = path.resolve(process.cwd(), "dist");
+    const filePath = path.resolve(process.cwd(), cdn.fileName);
     // 获取文件名
     const ext = path.basename(file);
     const afterfile = file.replace(ext, '')
@@ -161,7 +161,7 @@ const startCDN = async () => {
         try {
             const { cdn } = JSON.parse(files.toString());
             const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
-            const filePath = path.resolve(process.cwd(), "dist");
+            const filePath = path.resolve(process.cwd(), cdn.fileName);
             const cos = new COS({
                 SecretId: cdn.secretId,
                 SecretKey: cdn.secretKey,

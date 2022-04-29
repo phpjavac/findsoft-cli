@@ -28,7 +28,7 @@ var require_package = __commonJS({
   "package.json"(exports, module2) {
     module2.exports = {
       name: "@findsoft/findsoft-cli",
-      version: "0.4.0",
+      version: "0.4.2",
       description: "",
       bin: {
         "findsoft-cli": "dist/findsoft-cli.js"
@@ -68,7 +68,7 @@ var webpackLazyRouter = "manifest.js";
 var replaceHref = (cdn, element, file) => {
   element = element.replace(`/${cdn.fileName}/`, "./");
   const uploadFileName = `${cdn.fileName}/${cdn.version}`;
-  const filePath = import_path.default.resolve(process.cwd(), "dist");
+  const filePath = import_path.default.resolve(process.cwd(), cdn.fileName);
   const ext = import_path.default.basename(file);
   const afterfile = file.replace(ext, "");
   let url = import_path.default.resolve(afterfile, element);
@@ -182,7 +182,7 @@ var startCDN = async () => {
     try {
       const { cdn } = JSON.parse(files.toString());
       const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
-      const filePath = import_path.default.resolve(process.cwd(), "dist");
+      const filePath = import_path.default.resolve(process.cwd(), cdn.fileName);
       const cos = new import_cos_nodejs_sdk_v5.default({
         SecretId: cdn.secretId,
         SecretKey: cdn.secretKey
