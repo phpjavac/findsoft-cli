@@ -210,7 +210,9 @@ const startCDN = async () => {
         try {
             const { cdn } = JSON.parse(files.toString());
             if (os === "mac") {
-                cdn.fileName = cdn.fileName.replace(/\\/g, '/')
+                cdn.exclude = cdn.exclude.map(item=>{
+                    return item.replace(/\\/g, '/')
+                })
             }
             const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
             const filePath = path.resolve(process.cwd(), cdn.fileName);

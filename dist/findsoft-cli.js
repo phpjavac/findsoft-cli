@@ -28,7 +28,7 @@ var require_package = __commonJS({
   "package.json"(exports, module2) {
     module2.exports = {
       name: "@findsoft/findsoft-cli",
-      version: "0.5.0",
+      version: "0.5.1",
       description: "",
       bin: {
         "findsoft-cli": "dist/findsoft-cli.js"
@@ -244,7 +244,9 @@ var startCDN = async () => {
     try {
       const { cdn } = JSON.parse(files.toString());
       if (os === "mac") {
-        cdn.fileName = cdn.fileName.replace(/\\/g, "/");
+        cdn.exclude = cdn.exclude.map((item) => {
+          return item.replace(/\\/g, "/");
+        });
       }
       const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
       const filePath = import_path.default.resolve(process.cwd(), cdn.fileName);

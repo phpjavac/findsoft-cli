@@ -1,6 +1,6 @@
 {
   "name": "@findsoft/findsoft-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "bin": {
     "findsoft-cli": "dist/findsoft-cli.js"
