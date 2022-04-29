@@ -28,23 +28,31 @@ var require_package = __commonJS({
   "package.json"(exports, module2) {
     module2.exports = {
       name: "@findsoft/findsoft-cli",
-      version: "0.4.2",
+      version: "0.4.4",
       description: "",
       bin: {
         "findsoft-cli": "dist/findsoft-cli.js"
       },
       scripts: {
         build: "esbuild ./src/index.ts --bundle --platform=node --external:./node_modules/* --outfile=./dist/findsoft-cli.js",
-        test: 'echo "Error: no test specified" && exit 1'
+        test: "jest"
       },
       author: "",
       license: "ISC",
       dependencies: {
+        "@babel/preset-env": "^7.16.11",
+        babel: "^6.23.0",
         cheerio: "^1.0.0-rc.10",
         "cos-nodejs-sdk-v5": "^2.11.6",
         esbuild: "^0.14.36",
+        jest: "^28.0.2",
         progress: "^2.0.3",
         useref: "^1.4.4"
+      },
+      devDependencies: {
+        "@babel/preset-typescript": "^7.16.7",
+        "@types/jest": "^27.4.1",
+        "ts-jest": "^27.1.4"
       }
     };
   }
@@ -125,13 +133,21 @@ var isExclude = (file, exclude) => {
     if (exclude.length === 0) {
       return false;
     }
+    let tag = false;
     for (let index = 0; index < exclude.length; index++) {
       const element = exclude[index];
       if (element.endsWith("\\")) {
-        return file.includes(element);
+        if (file.includes(element)) {
+          tag = true;
+        }
+        ;
       }
-      return file.endsWith(element);
+      if (file.endsWith(element)) {
+        tag = true;
+      }
+      ;
     }
+    return tag;
   } else {
     if (exclude.endsWith("\\")) {
       return file.includes(exclude);
@@ -141,13 +157,21 @@ var isExclude = (file, exclude) => {
 };
 var isInclude = (file, include) => {
   if (Array.isArray(include)) {
+    let tag = false;
     for (let index = 0; index < include.length; index++) {
       const element = include[index];
       if (element.endsWith("\\")) {
-        return file.includes(element);
+        if (file.includes(element)) {
+          tag = true;
+        }
+        ;
       }
-      return file.endsWith(element);
+      if (file.endsWith(element)) {
+        tag = true;
+      }
+      ;
     }
+    return tag;
   } else {
     if (include.endsWith("\\")) {
       return file.includes(include);

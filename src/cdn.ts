@@ -79,19 +79,25 @@ function setHtml(html, path, cdn) {
 }
 
 /** 判断文件是否排除 */
-const isExclude = (file: string, exclude: string | string[]): boolean => {
+export const isExclude = (file: string, exclude: string | string[]): boolean => {
     if (Array.isArray(exclude)) {
         if (exclude.length === 0) {
             return false;
         }
+        let tag = false;
         for (let index = 0; index < exclude.length; index++) {
             const element = exclude[index];
             // 判断是否为文件夹
             if (element.endsWith("\\")) {
-                return file.includes(element);
+                if (file.includes(element)) {
+                    tag = true;
+                };
             }
-            return file.endsWith(element);
+            if (file.endsWith(element)) {
+                tag = true;
+            };
         }
+        return tag;
     } else {
         // 判断是否为文件夹
         if (exclude.endsWith("\\")) {
@@ -102,16 +108,22 @@ const isExclude = (file: string, exclude: string | string[]): boolean => {
 }
 
 /** 判断文件是否包含 */
-const isInclude = (file: string, include: string | string[]): boolean => {
+export const isInclude = (file: string, include: string | string[]): boolean => {
     if (Array.isArray(include)) {
+        let tag = false;
         for (let index = 0; index < include.length; index++) {
             const element = include[index];
             // 判断是否为文件夹
             if (element.endsWith("\\")) {
-                return file.includes(element);
+                if (file.includes(element)) {
+                    tag = true;
+                };
             }
-            return file.endsWith(element);
+            if (file.endsWith(element)) {
+                tag = true;
+            };
         }
+        return tag;
     } else {
         // 判断是否为文件夹
         if (include.endsWith("\\")) {
@@ -128,7 +140,7 @@ const isInclude = (file: string, include: string | string[]): boolean => {
  * @param includes 包含的文件 优先级比排除的文件高
  * @returns {string[]}
  */
-const fileDisplay = (filePath, exclude: string | string[] = [], includes?: string | string[]): string[] => {
+export const fileDisplay = (filePath, exclude: string | string[] = [], includes?: string | string[]): string[] => {
     let files = [];
     //根据文件路径读取文件，返回文件列表
     fs.readdirSync(filePath).forEach((filename) => {

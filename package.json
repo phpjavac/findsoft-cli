@@ -1,21 +1,29 @@
 {
   "name": "@findsoft/findsoft-cli",
-  "version": "0.4.2",
+  "version": "0.4.4",
   "description": "",
   "bin": {
     "findsoft-cli": "dist/findsoft-cli.js"
   },
   "scripts": {
     "build": "esbuild ./src/index.ts --bundle --platform=node --external:./node_modules/* --outfile=./dist/findsoft-cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/preset-env": "^7.16.11",
+    "babel": "^6.23.0",
     "cheerio": "^1.0.0-rc.10",
     "cos-nodejs-sdk-v5": "^2.11.6",
     "esbuild": "^0.14.36",
+    "jest": "^28.0.2",
     "progress": "^2.0.3",
     "useref": "^1.4.4"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/jest": "^27.4.1",
+    "ts-jest": "^27.1.4"
   }
 }
