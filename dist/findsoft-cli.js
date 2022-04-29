@@ -28,7 +28,7 @@ var require_package = __commonJS({
   "package.json"(exports, module2) {
     module2.exports = {
       name: "@findsoft/findsoft-cli",
-      version: "0.4.4",
+      version: "0.5.0",
       description: "",
       bin: {
         "findsoft-cli": "dist/findsoft-cli.js"
@@ -40,16 +40,17 @@ var require_package = __commonJS({
       author: "",
       license: "ISC",
       dependencies: {
-        "@babel/preset-env": "^7.16.11",
-        babel: "^6.23.0",
         cheerio: "^1.0.0-rc.10",
         "cos-nodejs-sdk-v5": "^2.11.6",
         esbuild: "^0.14.36",
-        jest: "^28.0.2",
         progress: "^2.0.3",
         useref: "^1.4.4"
       },
       devDependencies: {
+        babel: "^6.23.0",
+        "@babel/preset-env": "^7.16.11",
+        "@types/node": "^17.0.30",
+        jest: "^28.0.2",
         "@babel/preset-typescript": "^7.16.7",
         "@types/jest": "^27.4.1",
         "ts-jest": "^27.1.4"
@@ -73,6 +74,7 @@ var cheerio = __toESM(require("../node_modules/cheerio/lib/index.js"));
 var import_progress = __toESM(require("../node_modules/progress/index.js"));
 var lazyLoadJs = /^app.*.js$/;
 var webpackLazyRouter = "manifest.js";
+var os = process.platform === "win32" ? "win" : "mac";
 var replaceHref = (cdn, element, file) => {
   element = element.replace(`/${cdn.fileName}/`, "./");
   const uploadFileName = `${cdn.fileName}/${cdn.version}`;
@@ -136,23 +138,41 @@ var isExclude = (file, exclude) => {
     let tag = false;
     for (let index = 0; index < exclude.length; index++) {
       const element = exclude[index];
-      if (element.endsWith("\\")) {
-        if (file.includes(element)) {
+      if (os === "win") {
+        if (element.endsWith("\\")) {
+          if (file.includes(element)) {
+            tag = true;
+          }
+          ;
+        } else if (file.endsWith(element)) {
+          tag = true;
+        }
+        ;
+      } else {
+        if (element.endsWith("/")) {
+          if (file.includes(element)) {
+            tag = true;
+          }
+          ;
+        } else if (file.endsWith(element)) {
           tag = true;
         }
         ;
       }
-      if (file.endsWith(element)) {
-        tag = true;
-      }
-      ;
     }
     return tag;
   } else {
-    if (exclude.endsWith("\\")) {
-      return file.includes(exclude);
+    if (os === "win") {
+      if (exclude.endsWith("\\")) {
+        return file.includes(exclude);
+      }
+      return file.endsWith(exclude);
+    } else {
+      if (exclude.endsWith("/")) {
+        return file.includes(exclude);
+      }
+      return file.endsWith(exclude);
     }
-    return file.endsWith(exclude);
   }
 };
 var isInclude = (file, include) => {
@@ -160,23 +180,41 @@ var isInclude = (file, include) => {
     let tag = false;
     for (let index = 0; index < include.length; index++) {
       const element = include[index];
-      if (element.endsWith("\\")) {
-        if (file.includes(element)) {
+      if (os === "win") {
+        if (element.endsWith("\\")) {
+          if (file.includes(element)) {
+            tag = true;
+          }
+          ;
+        } else if (file.endsWith(element)) {
+          tag = true;
+        }
+        ;
+      } else {
+        if (element.endsWith("/")) {
+          if (file.includes(element)) {
+            tag = true;
+          }
+          ;
+        } else if (file.endsWith(element)) {
           tag = true;
         }
         ;
       }
-      if (file.endsWith(element)) {
-        tag = true;
-      }
-      ;
     }
     return tag;
   } else {
-    if (include.endsWith("\\")) {
-      return file.includes(include);
+    if (os === "win") {
+      if (include.endsWith("\\")) {
+        return file.includes(include);
+      }
+      return file.endsWith(include);
+    } else {
+      if (include.endsWith("/")) {
+        return file.includes(include);
+      }
+      return file.endsWith(include);
     }
-    return file.endsWith(include);
   }
 };
 var fileDisplay = (filePath, exclude = [], includes) => {
@@ -205,6 +243,9 @@ var startCDN = async () => {
       throw err;
     try {
       const { cdn } = JSON.parse(files.toString());
+      if (os === "mac") {
+        cdn.fileName = cdn.fileName.replace(/\\/g, "/");
+      }
       const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
       const filePath = import_path.default.resolve(process.cwd(), cdn.fileName);
       const cos = new import_cos_nodejs_sdk_v5.default({

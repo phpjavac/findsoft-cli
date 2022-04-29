@@ -9,6 +9,7 @@ import ProgressBar from "progress";
 const lazyLoadJs = /^app.*.js$/
 const webpackLazyRouter = "manifest.js"
 
+const os = process.platform === 'win32' ? 'win' : 'mac';
 const replaceHref = (cdn, element: string, file) => {
     element = element.replace(`/${cdn.fileName}/`, "./")
     const uploadFileName = `${cdn.fileName}/${cdn.version}`;
@@ -88,22 +89,39 @@ export const isExclude = (file: string, exclude: string | string[]): boolean => 
         for (let index = 0; index < exclude.length; index++) {
             const element = exclude[index];
             // 判断是否为文件夹
-            if (element.endsWith("\\")) {
-                if (file.includes(element)) {
+            if (os === 'win') {
+                if (element.endsWith("\\")) {
+                    if (file.includes(element)) {
+                        tag = true;
+                    };
+                } else if (file.endsWith(element)) {
+                    tag = true;
+                };
+            } else {
+                if (element.endsWith("/")) {
+                    if (file.includes(element)) {
+                        tag = true;
+                    };
+                } else if (file.endsWith(element)) {
                     tag = true;
                 };
             }
-            if (file.endsWith(element)) {
-                tag = true;
-            };
         }
         return tag;
     } else {
-        // 判断是否为文件夹
-        if (exclude.endsWith("\\")) {
-            return file.includes(exclude);
+        if (os === 'win') {
+            // 判断是否为文件夹
+            if (exclude.endsWith("\\")) {
+                return file.includes(exclude);
+            }
+            return file.endsWith(exclude);
+        } else {
+            // 判断是否为文件夹
+            if (exclude.endsWith("/")) {
+                return file.includes(exclude);
+            }
+            return file.endsWith(exclude);
         }
-        return file.endsWith(exclude);
     }
 }
 
@@ -114,22 +132,41 @@ export const isInclude = (file: string, include: string | string[]): boolean => 
         for (let index = 0; index < include.length; index++) {
             const element = include[index];
             // 判断是否为文件夹
-            if (element.endsWith("\\")) {
-                if (file.includes(element)) {
+            if (os === 'win') {
+                if (element.endsWith("\\")) {
+                    if (file.includes(element)) {
+                        tag = true;
+                    };
+                } else if (file.endsWith(element)) {
+                    tag = true;
+                };
+            } else {
+                if (element.endsWith("/")) {
+                    if (file.includes(element)) {
+                        tag = true;
+                    };
+                } else if (file.endsWith(element)) {
                     tag = true;
                 };
             }
-            if (file.endsWith(element)) {
-                tag = true;
-            };
+
         }
         return tag;
     } else {
-        // 判断是否为文件夹
-        if (include.endsWith("\\")) {
-            return file.includes(include);
+        if (os === 'win') {
+            // 判断是否为文件夹
+            if (include.endsWith("\\")) {
+                return file.includes(include);
+            }
+            return file.endsWith(include);
+        } else {
+            // 判断是否为文件夹
+            if (include.endsWith("/")) {
+                return file.includes(include);
+            }
+            return file.endsWith(include);
         }
-        return file.endsWith(include);
+
     }
 }
 
@@ -172,6 +209,9 @@ const startCDN = async () => {
             throw err;
         try {
             const { cdn } = JSON.parse(files.toString());
+            if (os === "mac") {
+                cdn.fileName = cdn.fileName.replace(/\\/g, '/')
+            }
             const uploadFileName = `${cdn.fileName}\\${cdn.version}`;
             const filePath = path.resolve(process.cwd(), cdn.fileName);
             const cos = new COS({
